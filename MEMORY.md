@@ -353,3 +353,20 @@ Use one block per loop:
 - Current normal candidate: `eb5d441382ef53a240f2edb4fa6f755e9c138e37`
 - Rollback Í∏∞Ï§Ä: preserve the deployed baseline; revert only with normal commits, never history rewrite
 - Remaining human confirmation needed: `CR-005` source facts for profile, contact, projects, research, and any extra game feature
+## Change Request Review Baseline
+
+- New Change Request ID: `CR-20260714-02`
+- Baseline commit: `0abd5f5`
+- Baseline URL: `https://gkullha-maker.github.io`
+- Loop execution order: `Loop-CR-005`, `Loop-CR-001`, `Loop-CR-003`, `Loop-CR-002`, `Loop-CR-004`
+- Next Step 9 loop: `Loop-CR-005`
+- Rollback ±‚¡ÿ: keep the deployed baseline; use normal commits only if rollback is needed
+- Human confirmation needed: grass style, snake style, retro reference, intro tone, and whether to hide uncertain items fully or keep them as comments
+
+## New Request Status
+
+- `CR-001`: `READY`
+- `CR-002`: `READY`
+- `CR-003`: `READY`
+- `CR-004`: `READY`
+- `CR-005`: `READY`

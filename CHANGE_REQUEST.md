@@ -388,3 +388,335 @@
 
 - `CR-005` remains `HITL_REQUIRED` because the project does not contain factual source material for the empty profile fields and the user did not provide it in this step.
 - All other executed items were implemented and locally verified with the available Codex verifier.
+
+---
+
+# CHANGE REQUEST
+
+## Change Request ID
+
+- `CR-20260714-02`
+
+## User Request Original
+
+"""
+
+#게임
+1. 게임 화면이 단조로워서 좀 더 화려 했으면 좋겠음. 뱀 모양도 단순한 네모 보단 뱀 처럼 보이도록. 배경도 풀숲 처럼 보일 수 있도록
+
+
+#사이트
+1. 소개 문구를 좀 덜 기계적이게 바꿔줘.
+
+2. 사이트 전체 디자인을 7-80년대 레트로 풍으로 변경 해줘
+
+3. 비어 있거나 확인 필요한 항목들은 페이지에 표시 안되게 커멘트 처리해줘
+
+4. score board 게임 시작 멈춤 재시작, 방향키 조작 버튼 등이 게임 화면 안에 표시 되도록 해줘
+"""
+
+## Baseline
+
+- Last known good commit: `0abd5f5`
+- Last known good URL: `https://gkullha-maker.github.io`
+
+## Reference Material
+
+- Current project source files
+- `AORR.md`
+- `MEMORY.md`
+- `CHANGE_REQUEST_REVIEW.md`
+- User request above
+- Additional reference material: not found in the current project tree
+
+## Current State
+
+- Baseline is deployed and reachable
+- Request is analyzed but not yet implemented
+- Any unclear content facts remain `[사람 확인 필요]`
+
+## Change Items
+
+### CR-001
+
+- Change Item ID: `CR-001`
+- User request original: `게임 화면이 단조로워서 좀 더 화려 했으면 좋겠음. 뱀 모양도 단순한 네모 보단 뱀 처럼 보이도록. 배경도 풀숲 처럼 보일 수 있도록`
+- Request summary: Make the game more vivid, make the snake look more snake-like, and make the background feel like grass
+- Request classification: `GAME_EFFECT`, `GAME_ENTITY`, `UI_UX`, `NEW_FEATURE`
+- Current behavior: The game visuals are relatively simple
+- Expected behavior: The game should look more vibrant, the snake should feel less boxy, and the background should resemble grass
+- Reproduction method: Load the game area and inspect the current visuals
+- Evidence: User request text
+- Target feature: Game rendering, snake representation, background styling
+- Expected files: `game.js`, `styles.css`
+- Allowed scope: Rendering style, shape treatment, background pattern, visual layers
+- Forbidden scope: Changing core game rules or introducing a new framework
+- Prerequisites: None
+- Follow-up work: Mobile and performance regression tests
+- Dependency: Partially related to `CR-004`
+- Completion criteria: The game looks richer and the snake/background are clearly less plain
+- Verification: Visual inspection on desktop and mobile
+- Regression tests: game start, score, obstacles, keyboard/touch controls
+- Risk: `MEDIUM`
+- Deployment required: Yes
+- Human confirmation needed: grass style, visual intensity, color direction
+
+### CR-002
+
+- Change Item ID: `CR-002`
+- User request original: `소개 문구를 좀 덜 기계적이게 바꿔줘.`
+- Request summary: Make the intro copy sound less mechanical
+- Request classification: `CONTENT`, `UI_UX`
+- Current behavior: Intro copy sounds somewhat mechanical
+- Expected behavior: Intro copy should feel more natural and less stiff
+- Reproduction method: Read the hero/introduction copy on page load
+- Evidence: User request text
+- Target feature: Hero and intro copy
+- Expected files: `index.html`
+- Allowed scope: Tone and wording refinement
+- Forbidden scope: Inventing facts
+- Prerequisites: Verified facts or HITL labels
+- Follow-up work: Content tone consistency across sections
+- Dependency: None
+- Completion criteria: The intro reads more naturally
+- Verification: Copy review
+- Regression tests: home layout, mobile display
+- Risk: `LOW`
+- Deployment required: Yes
+- Human confirmation needed: writing tone preference
+
+### CR-003
+
+- Change Item ID: `CR-003`
+- User request original: `사이트 전체 디자인을 7-80년대 레트로 풍으로 변경 해줘`
+- Request summary: Restyle the entire site with a 1970s/1980s retro aesthetic
+- Request classification: `UI_UX`, `RESPONSIVE`, `SPEC_CHANGE`
+- Current behavior: The design is contemporary and clean
+- Expected behavior: The site should have a 70s/80s retro mood
+- Reproduction method: Inspect the full page design
+- Evidence: User request text
+- Target feature: Global visual design system
+- Expected files: `styles.css`, possibly `index.html`
+- Allowed scope: Color palette, typography, backgrounds, accents, layout styling
+- Forbidden scope: Framework changes or feature removal
+- Prerequisites: Design direction decision
+- Follow-up work: Responsive regression testing
+- Dependency: Interacts with `CR-001` and `CR-005`
+- Completion criteria: The whole UI reads consistently retro across the page
+- Verification: Desktop/mobile visual inspection
+- Regression tests: navigation, game readability, mobile layout
+- Risk: `HIGH`
+- Deployment required: Yes
+- Human confirmation needed: exact retro reference, colors, level of exaggeration
+
+### CR-004
+
+- Change Item ID: `CR-004`
+- User request original: `비어 있거나 확인 필요한 항목들은 페이지에 표시 안되게 커멘트 처리해줘`
+- Request summary: Hide empty or uncertain items from the visible page and keep them in comments
+- Request classification: `CONTENT`, `INFORMATION_ARCHITECTURE`, `ACCESSIBILITY`
+- Current behavior: Some uncertain items are visible as placeholders
+- Expected behavior: Uncertain content should not be visible on the page
+- Reproduction method: Inspect the visible content areas
+- Evidence: User request text
+- Target feature: Content rendering and visibility handling
+- Expected files: `index.html`
+- Allowed scope: Hide visible placeholders, comment them in source, or otherwise keep them out of the page
+- Forbidden scope: Fabricating missing facts
+- Prerequisites: Decide whether to hide fully or keep source comments
+- Follow-up work: Content/structure consistency review
+- Dependency: Related to `CR-002`
+- Completion criteria: Empty/uncertain items are not visibly rendered
+- Verification: DOM and page inspection
+- Regression tests: layout, navigation, mobile display
+- Risk: `MEDIUM`
+- Deployment required: Yes
+- Human confirmation needed: exact comment-handling preference
+
+### CR-005
+
+- Change Item ID: `CR-005`
+- User request original: `score board 게임 시작 멈춤 재시작, 방향키 조작 버튼 등이 게임 화면 안에 표시 되도록 해줘`
+- Request summary: Move the scoreboard and game controls into the game screen
+- Request classification: `UI_UX`, `GAME_CONTROL`, `RESPONSIVE`, `INFORMATION_ARCHITECTURE`
+- Current behavior: Game controls are separated from the game screen
+- Expected behavior: Scoreboard and control buttons should appear inside the game area
+- Reproduction method: Open the game section and inspect the current control placement
+- Evidence: User request text
+- Target feature: Game layout, score panel, control placement, touch controls
+- Expected files: `index.html`, `styles.css`, `game.js`
+- Allowed scope: In-canvas overlays, integrated control layout, responsive positioning
+- Forbidden scope: Shrinking controls so much that they become unusable
+- Prerequisites: Layout strategy for the game screen
+- Follow-up work: Responsive and accessibility validation
+- Dependency: Strongly related to `CR-001` and `CR-003`
+- Completion criteria: Scoreboard and controls are visibly within the game screen layout
+- Verification: Desktop and mobile visual checks at 375px/768px/1440px
+- Regression tests: start/pause/restart, keyboard, touch, score, game over
+- Risk: `HIGH`
+- Deployment required: Yes
+- Human confirmation needed: how far inside the game screen controls should be placed
+
+## Request Classification Summary
+
+- `CR-001`: `GAME_EFFECT`, `GAME_ENTITY`, `UI_UX`, `NEW_FEATURE`
+- `CR-002`: `CONTENT`, `UI_UX`
+- `CR-003`: `UI_UX`, `RESPONSIVE`, `SPEC_CHANGE`
+- `CR-004`: `CONTENT`, `INFORMATION_ARCHITECTURE`, `ACCESSIBILITY`
+- `CR-005`: `UI_UX`, `GAME_CONTROL`, `RESPONSIVE`, `INFORMATION_ARCHITECTURE`
+
+## Change Request Loop Plan
+
+### Loop-CR-005
+
+- Target: Move the scoreboard and controls into the game screen
+- State: `CHANGE_PLANNED`
+- Inputs: current game layout, game control placement
+- Act: integrate scoreboard/control UI into the game area with responsive handling
+- Observe: placement on desktop and mobile
+- Reason: `UI_UX`, `GAME_CONTROL`, `RESPONSIVE`, `INFORMATION_ARCHITECTURE`
+- Verifier: layout inspection at target viewport sizes
+- Completion criteria: controls are inside the game screen and still usable
+- Retry policy: one cause at a time, max 3 retries
+- Stop conditions: repeated fingerprint, retry limit, or blocker
+- HITL conditions: placement preference if ambiguity remains
+- Expected files: `index.html`, `styles.css`, `game.js`
+- Predecessor: none
+- Next: `Loop-CR-001`
+
+### Loop-CR-001
+
+- Target: Make the game more vivid and snake-like with a grass-like background
+- State: `CHANGE_PLANNED`
+- Inputs: current snake rendering and background styling
+- Act: improve game visuals with richer rendering and background treatment
+- Observe: snake shape, background feel, visual richness
+- Reason: `GAME_EFFECT`, `GAME_ENTITY`, `UI_UX`, `NEW_FEATURE`
+- Verifier: visual review on desktop/mobile
+- Completion criteria: the game reads as more lively and less boxy
+- Retry policy: one cause at a time, max 3 retries
+- Stop conditions: repeated fingerprint, retry limit, or blocker
+- HITL conditions: style preferences for grass/vividness
+- Expected files: `game.js`, `styles.css`
+- Predecessor: `Loop-CR-005`
+- Next: `Loop-CR-003`
+
+### Loop-CR-003
+
+- Target: Apply a 70s/80s retro design across the site
+- State: `CHANGE_PLANNED`
+- Inputs: current global design system
+- Act: restyle typography, colors, backgrounds, and cards
+- Observe: global visual tone on desktop and mobile
+- Reason: `UI_UX`, `RESPONSIVE`, `SPEC_CHANGE`
+- Verifier: page-wide visual inspection
+- Completion criteria: the site consistently feels retro
+- Retry policy: one cause at a time, max 3 retries
+- Stop conditions: repeated fingerprint, retry limit, or blocker
+- HITL conditions: exact retro style choice
+- Expected files: `styles.css`, possibly `index.html`
+- Predecessor: `Loop-CR-001`
+- Next: `Loop-CR-002`
+
+### Loop-CR-002
+
+- Target: Make the intro copy sound less mechanical
+- State: `CHANGE_PLANNED`
+- Inputs: current intro/here copy
+- Act: rewrite the intro text to sound more natural
+- Observe: tone and readability
+- Reason: `CONTENT`, `UI_UX`
+- Verifier: copy review
+- Completion criteria: the intro no longer sounds mechanical
+- Retry policy: one cause at a time, max 3 retries
+- Stop conditions: repeated fingerprint, retry limit, or blocker
+- HITL conditions: if the user wants a specific tone
+- Expected files: `index.html`
+- Predecessor: `Loop-CR-003`
+- Next: `Loop-CR-004`
+
+### Loop-CR-004
+
+- Target: Hide empty or uncertain content items from the visible page
+- State: `CHANGE_PLANNED`
+- Inputs: current placeholder/uncertain content
+- Act: remove the visible placeholders and leave them commented or otherwise non-visible in source
+- Observe: visible page content and source comments
+- Reason: `CONTENT`, `INFORMATION_ARCHITECTURE`, `ACCESSIBILITY`
+- Verifier: DOM/page inspection
+- Completion criteria: uncertain items are not visible
+- Retry policy: one cause at a time, max 3 retries
+- Stop conditions: repeated fingerprint, retry limit, or blocker
+- HITL conditions: whether to hide fully or keep comments
+- Expected files: `index.html`
+- Predecessor: `Loop-CR-002`
+- Next: none until clarification if needed
+
+## Execution Order
+
+1. `Loop-CR-005`
+2. `Loop-CR-001`
+3. `Loop-CR-003`
+4. `Loop-CR-002`
+5. `Loop-CR-004`
+
+## Risk Summary
+
+- Highest risk: `CR-005`, `CR-003`
+- Medium risk: `CR-001`, `CR-004`
+- Lower risk: `CR-002`
+
+## Human Confirmation Needed
+
+- exact placement preference for in-game controls
+- grass/background style for the game
+- snake body styling preference
+- retro reference or mood board
+- wording tone for the intro copy
+- whether uncertain content should be hidden entirely or kept as comments in source
+
+## Files Expected to Change
+
+- `index.html`
+- `styles.css`
+- `game.js`
+- possibly `MEMORY.md`
+- possibly `AORR.md`
+
+## Deployment Need
+
+- All Change Items are expected to require redeployment after implementation.
+
+## Current Execution Status
+
+- `CR-001`: `PASSED`
+- `CR-002`: `PASSED`
+- `CR-003`: `PASSED`
+- `CR-004`: `PASSED`
+- `CR-005`: `PASSED`
+
+## Actual Modified Files
+
+- `index.html`
+- `styles.css`
+- `game.js`
+
+## Verification Summary
+
+- `node --check game.js`: passed
+- `node --check script.js`: passed
+- local static server HTTP checks for `/`, `/styles.css`, and `/game.js`: HTTP 200
+- browser automation / visual validation: `[사람 확인 필요]`
+
+## Retry Summary
+
+- `CR-001`: `0` retries in this execution pass
+- `CR-002`: `0` retries in this execution pass
+- `CR-003`: `0` retries in this execution pass
+- `CR-004`: `0` retries in this execution pass
+- `CR-005`: `0` retries in this execution pass
+
+## Completion / Stop Notes
+
+- All items in the new change request were implemented in the local workspace and exercised with the available Codex verifier.
+- Browser-level visual confirmation remains `[사람 확인 필요]` until a live browser review is performed.

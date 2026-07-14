@@ -625,6 +625,43 @@ This section aligns with `CHANGE_REQUEST.md` and controls the next implementatio
 - Do not proceed to dependent loops if their predecessor failed.
 - Do not mark a partially completed loop as `PASSED`.
 
+## Change Request Loop Plan for CR-20260714-02
+
+This section aligns with `CHANGE_REQUEST_REVIEW.md` and controls the next implementation pass for `CR-20260714-02`.
+
+### Change Request baseline
+
+- Change Request ID: `CR-20260714-02`
+- Baseline commit: `0abd5f5`
+- Baseline URL: `https://gkullha-maker.github.io`
+- Current execution mode: `CHANGE_PLANNED`
+
+### Ordered change loops
+
+| Loop ID | Connected Change Item | Target | State | Act | Observe | Reason | Verifier | Completion criteria | Retry policy | Stop conditions | HITL conditions | Expected files | Predecessor | Next Loop |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `Loop-CR-005` | `CR-005` | Move scoreboard and controls into the game screen | `READY` | Integrate scoreboard and controls into the game area with responsive handling | Placement on desktop and mobile | `UI_UX`, `GAME_CONTROL`, `RESPONSIVE`, `INFORMATION_ARCHITECTURE` | Layout inspection at target viewport sizes | Controls are inside the game screen and usable | One root cause per retry, max 3 | 3 retries, repeated fingerprint, blocker | Placement preference if ambiguous | `index.html`, `styles.css`, `game.js` | none | `Loop-CR-001` |
+| `Loop-CR-001` | `CR-001` | Make the game more vivid and snake-like with a grass-like background | `READY` | Improve game visuals with richer rendering and background treatment | Snake shape, background feel, visual richness | `GAME_EFFECT`, `GAME_ENTITY`, `UI_UX`, `NEW_FEATURE` | Visual review on desktop/mobile | Game reads as more lively and less boxy | One root cause per retry, max 3 | 3 retries, repeated fingerprint, blocker | Grass style and vividness level | `game.js`, `styles.css` | `Loop-CR-005` | `Loop-CR-003` |
+| `Loop-CR-003` | `CR-003` | Apply a 70s/80s retro design across the site | `READY` | Restyle typography, colors, backgrounds, and cards | Global visual tone on desktop and mobile | `UI_UX`, `RESPONSIVE`, `SPEC_CHANGE` | Page-wide visual inspection | The site consistently feels retro | One root cause per retry, max 3 | 3 retries, repeated fingerprint, blocker | Exact retro reference | `styles.css`, possibly `index.html` | `Loop-CR-001` | `Loop-CR-002` |
+| `Loop-CR-002` | `CR-002` | Make the intro copy sound less mechanical | `READY` | Rewrite the intro text to sound more natural | Tone and readability | `CONTENT`, `UI_UX` | Copy review | Intro no longer sounds mechanical | One root cause per retry, max 3 | 3 retries, repeated fingerprint, blocker | Writing tone preference | `index.html` | `Loop-CR-003` | `Loop-CR-004` |
+| `Loop-CR-004` | `CR-004` | Hide empty or uncertain content items from the visible page | `READY` | Remove visible placeholders and keep them commented or non-visible in source | Visible page content and source comments | `CONTENT`, `INFORMATION_ARCHITECTURE`, `ACCESSIBILITY` | DOM/page inspection | Uncertain items are not visible | One root cause per retry, max 3 | 3 retries, repeated fingerprint, blocker | Hide fully vs keep comments | `index.html` | `Loop-CR-002` | none |
+
+### Change loop execution order
+
+1. `Loop-CR-005`
+2. `Loop-CR-001`
+3. `Loop-CR-003`
+4. `Loop-CR-002`
+5. `Loop-CR-004`
+
+### Loop-level stop rules
+
+- Stop a loop after 3 retries for the same issue.
+- Stop immediately if the same fingerprint repeats twice.
+- Stop and mark `HITL_REQUIRED` if design direction, placement preference, or content-handling preference is missing.
+- Do not proceed to dependent loops if their predecessor failed.
+- Do not mark a partially completed loop as `PASSED`.
+
 ## Change Request Loop Execution Record
 
 ### Executed Change Request pass

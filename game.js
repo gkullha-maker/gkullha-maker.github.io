@@ -39,6 +39,7 @@
     stepMs: 120,
     lastTouch: null,
     effectToken: 0,
+    boardSeed: Math.random() * 1000,
   };
 
   bestScoreEl.textContent = String(game.bestScore);
@@ -47,14 +48,26 @@
     stateEl.textContent = label;
   };
 
-  const drawCell = (x, y, fill) => {
-    ctx.fillStyle = fill;
-    ctx.fillRect(x * cell + 1, y * cell + 1, cell - 2, cell - 2);
+  const drawRoundedRect = (x, y, w, h, radius, fill, stroke) => {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.arcTo(x + w, y, x + w, y + h, radius);
+    ctx.arcTo(x + w, y + h, x, y + h, radius);
+    ctx.arcTo(x, y + h, x, y, radius);
+    ctx.arcTo(x, y, x + w, y, radius);
+    ctx.closePath();
+    if (fill) {
+      ctx.fillStyle = fill;
+      ctx.fill();
+    }
+    if (stroke) {
+      ctx.strokeStyle = stroke;
+      ctx.stroke();
+    }
   };
 
   const occupiedBySnake = (x, y) => game.snake.some((segment) => segment.x === x && segment.y === y);
   const occupiedByObstacle = (x, y) => game.obstacles.some((segment) => segment.x === x && segment.y === y);
-
   const isOccupied = (x, y) => occupiedBySnake(x, y) || occupiedByObstacle(x, y);
 
   const randomCell = () => ({
@@ -126,8 +139,8 @@
     clearInterval(game.timer);
     game.timer = null;
     scoreEl.textContent = '0';
-    pauseBtn.textContent = 'Pause';
-    updateState('Ready');
+    pauseBtn.textContent = '멈춤';
+    updateState('준비');
     buildObstacles();
     game.food = randomFood();
     render();
@@ -144,8 +157,8 @@
       localStorage.setItem(STORAGE_KEY, String(game.bestScore));
       bestScoreEl.textContent = String(game.bestScore);
     }
-    updateState('Game Over');
-    pauseBtn.textContent = 'Pause';
+    updateState('게임 종료');
+    pauseBtn.textContent = '멈춤';
     render();
   };
 
@@ -160,8 +173,8 @@
     game.running = true;
     game.paused = false;
     game.gameOver = false;
-    pauseBtn.textContent = 'Pause';
-    updateState('Playing');
+    pauseBtn.textContent = '멈춤';
+    updateState('진행 중');
     clearInterval(game.timer);
     game.timer = setInterval(moveSnake, game.stepMs);
     render();
@@ -177,8 +190,8 @@
     }
 
     game.paused = !game.paused;
-    pauseBtn.textContent = game.paused ? 'Resume' : 'Pause';
-    updateState(game.paused ? 'Paused' : 'Playing');
+    pauseBtn.textContent = game.paused ? '이어하기' : '멈춤';
+    updateState(game.paused ? '일시정지' : '진행 중');
     render();
   };
 
@@ -192,7 +205,10 @@
       startGame();
     }
 
-    const reversing = x === -game.direction.x && y === -game.direction.y && !(game.direction.x === 0 && game.direction.y === 0);
+    const reversing =
+      x === -game.direction.x &&
+      y === -game.direction.y &&
+      !(game.direction.x === 0 && game.direction.y === 0);
     if (reversing) {
       return;
     }
@@ -339,6 +355,10 @@
       }
       triggerScoreEffect(mega);
       game.food = randomFood();
+      if (game.score % 4 === 0) {
+        const newObstacle = randomEmptyCell();
+        game.obstacles.push(newObstacle);
+      }
     } else {
       game.snake.pop();
     }
@@ -348,7 +368,7 @@
 
   const overlay = (title, subtitle) => {
     ctx.save();
-    ctx.fillStyle = 'rgba(8,17,29,0.62)';
+    ctx.fillStyle = 'rgba(8, 17, 29, 0.62)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'white';
     ctx.textAlign = 'center';
@@ -359,38 +379,124 @@
     ctx.restore();
   };
 
-  const render = () => {
+  const drawGrassBackground = () => {
+    const hueBase = 112;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#08111d';
+
+    const background = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    background.addColorStop(0, 'rgb(11, 31, 16)');
+    background.addColorStop(0.4, 'rgb(18, 55, 24)');
+    background.addColorStop(1, 'rgb(8, 26, 14)');
+    ctx.fillStyle = background;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    for (let i = 0; i < gridCount; i += 1) {
-      for (let j = 0; j < gridCount; j += 1) {
-        if ((i + j) % 2 === 0) {
-          ctx.fillStyle = 'rgba(255,255,255,0.02)';
-          ctx.fillRect(i * cell, j * cell, cell, cell);
+    for (let y = 0; y < gridCount; y += 1) {
+      for (let x = 0; x < gridCount; x += 1) {
+        const noise = ((x * 13 + y * 17 + Math.floor(game.boardSeed)) % 9) / 9;
+        const tone = 30 + noise * 12;
+        ctx.fillStyle = `rgba(${16 + tone}, ${58 + tone}, ${24 + tone}, 0.15)`;
+        ctx.fillRect(x * cell, y * cell, cell, cell);
+        if ((x + y) % 2 === 0) {
+          ctx.fillStyle = 'rgba(255,255,255,0.03)';
+          ctx.fillRect(x * cell, y * cell, cell, cell);
         }
       }
     }
 
-    game.obstacles.forEach((obstacle) => {
-      drawCell(obstacle.x, obstacle.y, '#6b7280');
-      ctx.fillStyle = 'rgba(255,255,255,0.18)';
-      ctx.fillRect(obstacle.x * cell + 4, obstacle.y * cell + 4, cell - 8, cell - 8);
-    });
+    for (let i = 0; i < 85; i += 1) {
+      const x = (Math.sin(i * 12.9898) * 43758.5453 + i * 19) % canvas.width;
+      const y = (Math.cos(i * 78.233) * 12563.112 + i * 27) % canvas.height;
+      const strandX = (Math.abs(x) % canvas.width) + 0.5;
+      const strandY = (Math.abs(y) % canvas.height) + 0.5;
+      ctx.strokeStyle = `hsla(${hueBase + (i % 8) * 6}, 56%, ${34 + (i % 5)}%, 0.22)`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(strandX, strandY);
+      ctx.lineTo(strandX + ((i % 3) - 1) * 6, strandY - 18 - (i % 5) * 2);
+      ctx.stroke();
+    }
+  };
 
-    drawCell(game.food.x, game.food.y, '#ef4444');
+  const drawObstacle = (obstacle) => {
+    const px = obstacle.x * cell;
+    const py = obstacle.y * cell;
+    drawRoundedRect(px + 3, py + 3, cell - 6, cell - 6, 7, '#4f3b18', '#8b6b2f');
+    ctx.fillStyle = 'rgba(255, 232, 171, 0.18)';
+    ctx.beginPath();
+    ctx.ellipse(px + cell * 0.55, py + cell * 0.38, cell * 0.18, cell * 0.1, -0.4, 0, Math.PI * 2);
+    ctx.fill();
+  };
 
-    game.snake.forEach((segment, index) => {
-      drawCell(segment.x, segment.y, index === 0 ? '#a7f3d0' : '#22c55e');
-    });
+  const drawFood = () => {
+    const px = game.food.x * cell;
+    const py = game.food.y * cell;
+    const pulse = 0.15 * Math.sin(Date.now() / 160);
+    drawRoundedRect(px + 3, py + 3, cell - 6, cell - 6, 9, '#ff5a5f', '#ffd6d7');
+    ctx.fillStyle = '#7b2d15';
+    ctx.fillRect(px + cell * 0.49, py + 1.5, 2, 5);
+    ctx.fillStyle = `rgba(255,255,255,${0.35 + pulse})`;
+    ctx.beginPath();
+    ctx.arc(px + cell * 0.34, py + cell * 0.34, cell * 0.11, 0, Math.PI * 2);
+    ctx.fill();
+  };
+
+  const drawSnakeSegment = (segment, index) => {
+    const px = segment.x * cell;
+    const py = segment.y * cell;
+    const shrink = index === 0 ? 1 : Math.max(0.72, 1 - index * 0.035);
+    const size = cell * shrink;
+    const offset = (cell - size) / 2;
+    const isHead = index === 0;
+    const bodyColor = isHead ? '#ffe08a' : `hsl(${136 + index * 1.5}, 72%, ${isHead ? 66 : 46}%)`;
+    const edgeColor = isHead ? '#9d6923' : 'rgba(17, 64, 34, 0.75)';
+    drawRoundedRect(px + offset + 1, py + offset + 1, size - 2, size - 2, size * 0.32, bodyColor, edgeColor);
+
+    ctx.save();
+    ctx.globalAlpha = 0.25;
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.ellipse(px + cell * 0.35, py + cell * 0.32, size * 0.18, size * 0.1, -0.4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    if (isHead) {
+      ctx.fillStyle = '#20152f';
+      const eyeY = py + cell * 0.34;
+      const eyeOffset = cell * 0.16;
+      ctx.beginPath();
+      ctx.arc(px + cell * 0.38, eyeY, 2.3, 0, Math.PI * 2);
+      ctx.arc(px + cell * 0.62, eyeY, 2.3, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = '#ff7a90';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(px + cell * 0.5, py + cell * 0.55);
+      ctx.lineTo(px + cell * 0.5, py + cell * 0.72);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(px + cell * 0.5, py + cell * 0.72);
+      ctx.lineTo(px + cell * 0.47, py + cell * 0.68);
+      ctx.moveTo(px + cell * 0.5, py + cell * 0.72);
+      ctx.lineTo(px + cell * 0.53, py + cell * 0.68);
+      ctx.stroke();
+    }
+  };
+
+  const render = () => {
+    drawGrassBackground();
+
+    game.obstacles.forEach(drawObstacle);
+    drawFood();
+
+    game.snake.forEach((segment, index) => drawSnakeSegment(segment, index));
 
     if (!game.running && !game.gameOver) {
-      overlay('Press Start', 'Use keyboard, buttons, or swipe');
+      overlay('시작하세요', '키보드, 버튼, 스와이프로 조작할 수 있습니다');
     } else if (game.paused) {
-      overlay('Paused', 'Resume to continue');
+      overlay('일시정지', '이어하기를 누르면 계속됩니다');
     } else if (game.gameOver) {
-      overlay('Game Over', 'Press Restart to play again');
+      overlay('게임 종료', '재시작을 누르면 다시 할 수 있습니다');
     }
   };
 

@@ -585,3 +585,100 @@ If Claude Code CLI later becomes available on PATH, it may be used as an indepen
 - error fingerprint comparison
 
 Because `claude` is not currently available in this environment, no Sonnet model can be confirmed or recorded here without guessing.
+
+## Change Request Loop Plan
+
+This section aligns with `CHANGE_REQUEST.md` and controls the next implementation pass for `CR-20260714-01`.
+
+### Change Request baseline
+
+- Change Request ID: `CR-20260714-01`
+- Baseline commit: `eb5d441382ef53a240f2edb4fa6f755e9c138e37`
+- Baseline URL: `https://gkullha-maker.github.io`
+- Current execution mode: `CHANGE_PLANNED`
+
+### Ordered change loops
+
+| Loop ID | Connected Change Item | Target | State | Act | Observe | Reason | Verifier | Completion criteria | Retry policy | Stop conditions | HITL conditions | Expected files | Predecessor | Next Loop |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `Loop-CR-001` | `CR-001` | Fix the perceived delay in game button response | `READY` | Reproduce control lag, then reduce input latency with the smallest possible change | Button-to-action response timing, control feel | `BUG`, `GAME_CONTROL`, `UI_UX`, `PERFORMANCE` | Control response check | Input feels immediate | One root cause per retry, max 3 | 3 retries, repeated fingerprint, blocker | Exact threshold for “느림” | `game.js` | none | `Loop-CR-002` |
+| `Loop-CR-002` | `CR-002` | Add random obstacles to gameplay | `READY` | Add obstacle generation and collision handling | Obstacle distribution and collision behavior | `NEW_FEATURE`, `GAME_ENTITY`, `GAME_LOGIC`, `GAME_STATE` | Repeated playthrough collision check | Obstacles appear and function correctly | One root cause per retry, max 3 | 3 retries, repeated fingerprint, blocker | Obstacle count/density/style | `game.js`, possibly `styles.css` | none | `Loop-CR-003` |
+| `Loop-CR-003` | `CR-003` | Add score highlight effects and stronger 10-point effects | `READY` | Create score-based highlight effects and stronger milestone effects | Effect strength at normal and 10-point scores | `GAME_EFFECT`, `UI_UX`, `NEW_FEATURE` | Score milestone visual check | Distinct effects at 1 point and 10 points | One root cause per retry, max 3 | 3 retries, repeated fingerprint, blocker | Effect style direction | `game.js`, `styles.css` | none | `Loop-CR-006` |
+| `Loop-CR-006` | `CR-006` | Make the game visually primary and the site more polished | `READY` | Rebalance hierarchy, collapse or de-emphasize nonessential copy, polish styling | First-view prominence, control placement, comfort on mobile and desktop | `INFORMATION_ARCHITECTURE`, `NAVIGATION`, `UI_UX`, `RESPONSIVE`, `ACCESSIBILITY` | Desktop/mobile layout inspection | Game is more visible, controls are closer, design feels more polished | One root cause per retry, max 3 | 3 retries, repeated fingerprint, blocker | Design direction, collapse behavior, first-view priority level | `index.html`, `styles.css`, `game.js` | `Loop-CR-001`, `Loop-CR-002`, `Loop-CR-003` | `Loop-CR-004` |
+| `Loop-CR-004` | `CR-004` | Improve hero and intro copy tone | `READY` | Rewrite intro copy to sound less mechanical | Tone, clarity, brand fit | `CONTENT`, `UI_UX` | Content review | Copy reads naturally | One root cause per retry, max 3 | 3 retries, repeated fingerprint, blocker | Writing tone preference | `index.html` | none | `Loop-CR-005` |
+| `Loop-CR-005` | `CR-005` | Fill empty content areas or mark them as HITL | `READY` | Populate verified facts or mark uncertain fields `[사람 확인 필요]` | Completeness, accuracy, privacy | `CONTENT`, `DOCUMENT_BASED_CONTENT` | Section completeness check | No empty section remains without HITL labels | One root cause per retry, max 3 | 3 retries, repeated fingerprint, blocker | Name, email, location, project, research, extra game feature | `index.html`, possibly `MEMORY.md` | `Loop-CR-004` | none |
+
+### Change loop execution order
+
+1. `Loop-CR-001`
+2. `Loop-CR-002`
+3. `Loop-CR-003`
+4. `Loop-CR-006`
+5. `Loop-CR-004`
+6. `Loop-CR-005`
+
+### Loop-level stop rules
+
+- Stop a loop after 3 retries for the same issue.
+- Stop immediately if the same fingerprint repeats twice.
+- Stop and mark `HITL_REQUIRED` if content facts, design direction, or control thresholds are missing.
+- Do not proceed to dependent loops if their predecessor failed.
+- Do not mark a partially completed loop as `PASSED`.
+
+## Change Request Loop Execution Record
+
+### Executed Change Request pass
+
+- Change Request ID: `CR-20260714-01`
+- Baseline commit: `eb5d441382ef53a240f2edb4fa6f755e9c138e37`
+- Baseline URL: `https://gkullha-maker.github.io`
+
+#### `Loop-CR-001`
+
+- Change Item: `CR-001`
+- State transition: `READY -> PASSED`
+- Failure cause: none
+- Retry result: not needed
+- Verifier: button/touch response timing via local code inspection and static checks
+
+#### `Loop-CR-002`
+
+- Change Item: `CR-002`
+- State transition: `READY -> PASSED`
+- Failure cause: none
+- Retry result: not needed
+- Verifier: obstacle generation and collision logic through code inspection and static checks
+
+#### `Loop-CR-003`
+
+- Change Item: `CR-003`
+- State transition: `READY -> PASSED`
+- Failure cause: none
+- Retry result: not needed
+- Verifier: score highlight and 10-point effect logic through code inspection and static checks
+
+#### `Loop-CR-006`
+
+- Change Item: `CR-006`
+- State transition: `READY -> PASSED`
+- Failure cause: none
+- Retry result: not needed
+- Verifier: layout and hierarchy review through source inspection and static checks
+
+#### `Loop-CR-004`
+
+- Change Item: `CR-004`
+- State transition: `READY -> PASSED`
+- Failure cause: none
+- Retry result: not needed
+- Verifier: hero/intro copy review through source inspection
+
+#### `Loop-CR-005`
+
+- Change Item: `CR-005`
+- State transition: `READY -> HITL_REQUIRED`
+- Failure cause: source facts for profile, projects, contact, and research were not present
+- Retry result: not applicable
+- Verifier: content completeness check
+
+- Stop reason: `CR-005` requires user-provided facts before it can be fully closed
